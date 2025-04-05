@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
-    # paths:
-      # - 'backend/gateway-service/**'
+    paths:
+      - 'backend/gateway-service/**'
   pull_request:
     branches:
       - master
-    # paths:
-      # - 'backend/gateway-service/**'
+    paths:
+      - 'backend/gateway-service/**'
 
 env:
   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
