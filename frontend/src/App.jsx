@@ -33,7 +33,7 @@ import BookedAppointments from './Pages/AppStack/AdminStack/Appointments/BookedA
 
 function App() {
   alert( import.meta.env.VITE_FIREBASE_API_KEY)
-  console.log( import.meta.env.VITE_FIREBASE_API_KEY)
+  console.log(import.meta.env.VITE_FIREBASE_API_KEY)
   return (
     <AuthProvider>
       <BrowserRouter>
