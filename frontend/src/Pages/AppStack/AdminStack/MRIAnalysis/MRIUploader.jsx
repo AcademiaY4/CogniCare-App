@@ -3,8 +3,10 @@ import axios from "axios";
 import ResultsDisplay from "./ResultsDisplay";
 import Toaster from "../../../../Utils/Toaster/Toaster";
 
-const API_URL =
-  "https://api-gateway-341015716129.asia-southeast1.run.app/api/v1/mri-service/predict/";
+// const API_URL =
+//   "https://api-gateway-341015716129.asia-southeast1.run.app/api/v1/mri-service/predict/";
+
+const API_URL =  "http://35.240.138.184:8349/api/v1/mri-service/predict/";
 
 const MRIUploader = () => {
   const [file, setFile] = useState(null);

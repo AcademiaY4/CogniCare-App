@@ -17,7 +17,8 @@ export default function ProgressionTracking() {
 
     try {
       const response = await axios.post(
-        "https://api-gateway-341015716129.asia-southeast1.run.app/api/v1/progression-tracking-service/predict",
+        // "https://api-gateway-341015716129.asia-southeast1.run.app/api/v1/progression-tracking-service/predict",
+        "http://35.240.138.184:8349/api/v1/progression-tracking-service/predict",
         data,
         {
           headers: {
