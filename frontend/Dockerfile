@@ -1,70 +1,39 @@
-# # Use an official Node.js runtime as a parent image
-# FROM node:20-alpine
-
-# # Set the working directory in the container
-# WORKDIR /app
-
-# # Copy package.json and package-lock.json
-# COPY package.json package-lock.json ./
-
-# # Install dependencies
-# RUN npm install
-
-# # Copy the rest of the application files
-# COPY . .
-
-# # Build the app
-# RUN npm run build
-
-# # Expose port 6757
-# EXPOSE 6757
-
-# # Start nginx
-# CMD ["npm","run","preview"]
-
-FROM node:20-alpine AS build
-
-WORKDIR /app
-
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
-
-# Copy project files
-COPY . .
-
-# Build the app
-RUN npm run build
-
-# Create a script to replace env placeholders
-RUN echo '#!/bin/sh' > /app/entrypoint.sh
-RUN echo 'echo "window.__ENV__ = {" > /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_API_KEY: \"$VITE_FIREBASE_API_KEY\"," >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_AUTH_DOMAIN: \"$VITE_FIREBASE_AUTH_DOMAIN\"," >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_PROJECT_ID: \"$VITE_FIREBASE_PROJECT_ID\"," >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_STORAGE_BUCKET: \"$VITE_FIREBASE_STORAGE_BUCKET\"," >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_MESSAGING_SENDER_ID: \"$VITE_FIREBASE_MESSAGING_SENDER_ID\"," >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "  VITE_FIREBASE_APP_ID: \"$VITE_FIREBASE_APP_ID\"" >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'echo "};" >> /app/dist/env-config.js' >> /app/entrypoint.sh
-RUN echo 'exec npm run preview' >> /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
-# Production stage
 FROM node:20-alpine
 
+# Install envsubst
+RUN apk add --no-cache gettext
+
+# Set working directory
 WORKDIR /app
 
-# Copy built files and necessary configs
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/entrypoint.sh ./
-COPY --from=build /app/vite.config.js ./
+# Copy dependencies
+COPY package.json package-lock.json ./
+RUN npm install
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Copy rest of the app
+COPY . .
 
-# Expose port 6757
+# Create env-config.js.template
+RUN mkdir -p public && echo 'window.__ENV__ = {' > public/env-config.js.template && \
+    echo '  VITE_FIREBASE_API_KEY: "${VITE_FIREBASE_API_KEY}",' >> public/env-config.js.template && \
+    echo '  VITE_FIREBASE_AUTH_DOMAIN: "${VITE_FIREBASE_AUTH_DOMAIN}",' >> public/env-config.js.template && \
+    echo '  VITE_FIREBASE_PROJECT_ID: "${VITE_FIREBASE_PROJECT_ID}",' >> public/env-config.js.template && \
+    echo '  VITE_FIREBASE_STORAGE_BUCKET: "${VITE_FIREBASE_STORAGE_BUCKET}",' >> public/env-config.js.template && \
+    echo '  VITE_FIREBASE_MESSAGING_SENDER_ID: "${VITE_FIREBASE_MESSAGING_SENDER_ID}",' >> public/env-config.js.template && \
+    echo '  VITE_FIREBASE_APP_ID: "${VITE_FIREBASE_APP_ID}"' >> public/env-config.js.template && \
+    echo '};' >> public/env-config.js.template
+
+# Build app
+RUN npm run build
+
+# Copy template to dist
+RUN cp public/env-config.js.template dist/
+
+# Add runtime startup script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'envsubst < /app/dist/env-config.js.template > /app/dist/env-config.js' >> /app/start.sh && \
+    echo 'exec npm run preview -- --host 0.0.0.0 --port 6757' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
 EXPOSE 6757
-
-# Use entrypoint script
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["/app/start.sh"]
