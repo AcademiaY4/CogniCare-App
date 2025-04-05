@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'backend/mri-service/**'
+    # paths:
+    #   - 'backend/mri-service/**'
   pull_request:
     branches:
       - master
-    paths:
-      - 'backend/mri-service/**'
+    # paths:
+    #   - 'backend/mri-service/**'
 
 env:
   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
