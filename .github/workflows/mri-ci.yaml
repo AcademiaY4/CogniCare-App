@@ -46,5 +46,5 @@ jobs:
       - name: 'Build and Push To GAR'
         run: |-
           DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" ./backend/mri-sevice
+          docker build --tag "${DOCKER_TAG}" ./backend/mri-service
           docker push "${DOCKER_TAG}"
