@@ -23,7 +23,6 @@ app.add_middleware(
 app.include_router(treatment_plan.router, prefix=f"/api/{API_VERSION}/treatment-plan")
 app.include_router(availability.router, prefix=f"/api/{API_VERSION}/availability")
 
-
 @app.get("/")
 async def root():
     return {

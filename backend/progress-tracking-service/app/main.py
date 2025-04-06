@@ -10,7 +10,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -20,10 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Include routers
 app.include_router(predictions.router)
-
 
 @app.get("/")
 async def root():

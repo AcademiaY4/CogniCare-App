@@ -22,11 +22,9 @@ app.add_middleware(
 # Include prediction router
 app.include_router(predictions.router, tags=["Predictions"])
 
-
 @asynccontextmanager
 async def lifespan():
     logger.info("API is starting up...")
-
 
 @app.get("/")
 async def is_running():
