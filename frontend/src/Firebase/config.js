@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// Utility to support both build-time and runtime environments
+//ENV Utility to support both build-time and runtime environments
 const getEnv = (key) => {
   return window?.__ENV__?.[key] || import.meta.env[key];
 };
