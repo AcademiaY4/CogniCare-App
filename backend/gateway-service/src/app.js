@@ -17,9 +17,14 @@ app.get('/', (req, res) => {
 })
 
 // proxies
-app.use('/api/v1/mri-service', proxy(EnvConfig.MRI_SERVICE_ROUTE))
-app.use('/api/v1/treatment-plan-service', proxy(EnvConfig.TREATMENT_PLAN_SERVICE_ROUTE))
-app.use('/api/v1/progression-tracking-service', proxy(EnvConfig.PROGRESSION_TRACKING_SERVICE_ROUTE))
+// app.use('/api/v1/mri-service', proxy(EnvConfig.MRI_SERVICE_ROUTE))
+// app.use('/api/v1/treatment-plan-service', proxy(EnvConfig.TREATMENT_PLAN_SERVICE_ROUTE))
+// app.use('/api/v1/progression-tracking-service', proxy(EnvConfig.PROGRESSION_TRACKING_SERVICE_ROUTE))
+
+// Change proxy paths to match Ingress routes
+app.use('/mri', proxy(EnvConfig.MRI_SERVICE_ROUTE))
+app.use('/treatment-planning', proxy(EnvConfig.TREATMENT_PLAN_SERVICE_ROUTE))
+app.use('/progress-tracking', proxy(EnvConfig.PROGRESSION_TRACKING_SERVICE_ROUTE))
 
 //not found route
 app.use((req, res) => {
