@@ -1,5 +1,40 @@
-# .github/workflows/trivy-scan.yaml
-name: 'Trivy Security Scan'
+# # .github/workflows/trivy-scan.yaml
+# name: 'Trivy Security Scan'
+
+# on:
+#   workflow_call:
+#     inputs:
+#       image_ref:
+#         required: true
+#         type: string
+
+# permissions:
+#   security-events: write # Needed for Trivy action to upload SARIF
+
+# jobs:
+#   security_scan:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v4
+
+#       - name: Run Trivy vulnerability scanner
+#         uses: aquasecurity/trivy-action
+#         with:
+#           image-ref: ${{ inputs.image_ref }}
+#           format: 'sarif'
+#           output: 'trivy-results.sarif'
+#           severity: 'HIGH,CRITICAL' # Adjust severity as needed
+#           exit-code: '1' # Fail the workflow step if vulnerabilities are found
+#           ignore-unfixed: true # Optional: Ignore unfixed vulnerabilities
+
+#       - name: Upload Trivy scan results to GitHub Security tab
+#         uses: github/codeql-action/upload-sarif@v3
+#         if: always() # Ensure this runs even if Trivy fails
+#         with:
+#           sarif_file: 'trivy-results.sarif'
+
+name: "Reusable: Trivy Scan"
 
 on:
   workflow_call:
@@ -8,28 +43,24 @@ on:
         required: true
         type: string
 
-permissions:
-  security-events: write # Needed for Trivy action to upload SARIF
-
 jobs:
-  security_scan:
+  trivy:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ inputs.image_ref }}
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: 'HIGH,CRITICAL' # Adjust severity as needed
-          exit-code: '1' # Fail the workflow step if vulnerabilities are found
-          ignore-unfixed: true # Optional: Ignore unfixed vulnerabilities
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+          ignore-unfixed: true
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v3
-        if: always() # Ensure this runs even if Trivy fails
+        if: always()
         with:
           sarif_file: 'trivy-results.sarif'
