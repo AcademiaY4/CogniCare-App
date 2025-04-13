@@ -96,6 +96,7 @@ jobs:
     uses: ./.github/workflows/trivy-scan.yaml
     with:
       image_ref: ${{ needs.build.outputs.docker_tag }}
+    secrets: inherit
 
   push:
     needs: trivy-scan
