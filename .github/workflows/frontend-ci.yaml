@@ -44,7 +44,7 @@ jobs:
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
 
       - name: 'Call Trivy Reusable Workflow'
-        uses: CogniCare-App/.github/workflows/trivy-scan.yaml@master
+        uses: ./.github/workflows/trivy-scan.yaml
         with:
           image-ref: ${{ env.DOCKER_TAG }}
 
