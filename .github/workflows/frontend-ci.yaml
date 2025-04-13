@@ -98,6 +98,14 @@ jobs:
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       GAR_REGION: ${{ secrets.GAR_REGION }}
 
+  # Add a debug job
+  debug-outputs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print docker tag
+        run: echo "DOCKER_TAG=${{ needs.build.outputs.docker_tag }}"
+  
   trivy-scan:
     needs: build
     uses: ./.github/workflows/trivy-scan.yaml
