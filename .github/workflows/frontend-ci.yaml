@@ -1,75 +1,3 @@
-# name: 'Frontend Service CI'
-
-# on:
-#   push:
-#     branches: [master]
-#     paths: ['frontend/**']
-#   pull_request:
-#     branches: [master]
-#     paths: ['frontend/**']
-#   workflow_dispatch:
-
-# env:
-#   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
-#   GAR_IMAGE_NAME: '${{ secrets.FE_GAR_IMAGE_NAME }}'
-#   GAR_REPO_NAME: '${{ secrets.FE_GAR_REPO_NAME }}'
-#   GAR_REGION: '${{ secrets.GAR_REGION }}'
-
-# permissions:
-#   contents: read
-#   id-token: write
-#   security-events: write
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       docker_tag: ${{ steps.docker_build.outputs.docker_tag }}
-#     steps:
-#       - name: 'Checkout'
-#         uses: actions/checkout@v4
-
-#       - name: 'Authenticate to GCP'
-#         uses: google-github-actions/auth@v2
-#         with:
-#           credentials_json: '${{ secrets.GCP_CREDS }}'
-
-#       - name: 'Set up Cloud SDK'
-#         uses: google-github-actions/setup-gcloud@v2
-
-#       - name: 'Docker Auth To GAR'
-#         run: gcloud auth configure-docker "${{ env.GAR_REGION }}-docker.pkg.dev"
-
-#       - name: 'Build Docker Image'
-#         id: docker_build
-#         run: |
-#           DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
-#           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
-#           echo "::set-output name=docker_tag::$DOCKER_TAG"
-#           docker build -t "$DOCKER_TAG" ./frontend
-
-#   trivy-scan:
-#     needs: build
-#     uses: ./.github/workflows/trivy-scan.yaml
-#     with:
-#       image_ref: ${{ needs.build.outputs.docker_tag }}
-#     secrets: inherit
-
-#   push:
-#     runs-on: ubuntu-latest
-#     needs: trivy-scan
-#     steps:
-#       - name: 'Authenticate to GCP'
-#         uses: google-github-actions/auth@v2
-#         with:
-#           credentials_json: '${{ secrets.GCP_CREDS }}'
-
-#       - name: 'Docker Auth To GAR'
-#         run: gcloud auth configure-docker "${{ env.GAR_REGION }}-docker.pkg.dev"
-
-#       - name: 'Push Docker Image'
-#         run: docker push "${{ needs.build.outputs.docker_tag }}"
-
 name: "Frontend Service CI"
 
 on:
@@ -97,14 +25,6 @@ jobs:
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       GAR_REGION: ${{ secrets.GAR_REGION }}
-
-  # Add a debug job
-  debug-outputs:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print docker tag
-        run: echo "DOCKER_TAG=${{ needs.build.outputs.docker_tag }}"
   
   trivy-scan:
     needs: build
