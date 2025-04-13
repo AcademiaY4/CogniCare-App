@@ -62,13 +62,14 @@ jobs:
           
           # Build the docker tag string
           DOCKER_TAG="${GAR_REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${{ github.sha }}"
+          DOCKER_TAG_SHA="${{ github.sha }}"
           
           # Output for debugging
           echo "Constructed DOCKER_TAG: $DOCKER_TAG"
           
           # Set the outputs
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
-          echo "docker_tag=$DOCKER_TAG" >> $GITHUB_OUTPUT
+          echo "docker_tag=$DOCKER_TAG_SHA" >> $GITHUB_OUTPUT
           
           # Build the docker image
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}
