@@ -3,10 +3,10 @@ name: "Frontend Service CI"
 on:
   push:
     branches: [master]
-    paths: ['frontend/**']
+    paths: ["frontend/**"]
   pull_request:
     branches: [master]
-    paths: ['frontend/**']
+    paths: ["frontend/**"]
   workflow_dispatch:
 
 permissions:
@@ -18,19 +18,19 @@ jobs:
   build:
     uses: ./.github/workflows/build-docker.yaml
     with:
-      dockerfile_path: './frontend'
-    secrets: 
+      dockerfile_path: "./frontend"
+    secrets:
       FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
       FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       GAR_REGION: ${{ secrets.GAR_REGION }}
-  
+
   trivy-scan:
     needs: build
     uses: ./.github/workflows/trivy-scan.yaml
     with:
       image_ref: ${{ needs.build.outputs.docker_tag }}
-    secrets: 
+    secrets:
       FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
       FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
@@ -42,4 +42,9 @@ jobs:
     uses: ./.github/workflows/push-docker.yaml
     with:
       docker_tag: ${{ needs.build.outputs.docker_tag }}
-    secrets: inherit
+    secrets:
+      FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
+      FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}

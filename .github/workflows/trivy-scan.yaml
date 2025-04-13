@@ -6,6 +6,18 @@ on:
       image_ref:
         required: true
         type: string
+    
+    secrets:
+      GCP_CREDS:
+        required: true
+      PROJECT_ID:
+        required: true
+      GAR_REGION:
+        required: true
+      FE_GAR_IMAGE_NAME:
+        required: true
+      FE_GAR_REPO_NAME:
+        required: true
 
 jobs:
   trivy:
@@ -16,12 +28,12 @@ jobs:
 
       - name: Print image ref for debug 🐞
         run: echo "IMAGE_REF=${{ inputs.image_ref }}"
-        
+
       - name: Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
-          image-ref: ${{ inputs.image_ref }}
+          image-ref: ${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.docker_tag }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
