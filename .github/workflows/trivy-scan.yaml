@@ -1,31 +1,39 @@
-name: 'Trivy Image Scanning'
+# .github/workflows/trivy-scan.yaml
+name: 'Trivy Security Scan'
 
 on:
   workflow_call:
     inputs:
-      image:
+      image_ref:
         required: true
         type: string
 
 permissions:
-  security-events: write
+  security-events: write # Needed for Trivy action to upload SARIF
 
 jobs:
-  trivy_scan:
+  security_scan:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 'Set up Trivy'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
+      - name: 'Checkout Code (if needed)'
+        uses: actions/checkout@v4
+        # Conditionally checkout only if the image context requires it
+        # For pre-built images, this step might not be necessary.
+        # You might need to adjust the 'if' condition based on your use case.
+        if: false # Set to true if Trivy needs to access the codebase
 
-      - name: 'Scan Docker Image with Trivy'
-        run: |
-          trivy image --format sarif -o trivy-results.sarif "${{ inputs.image }}"
-
-      - name: 'Upload SARIF Report to GitHub'
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.18.0 # Use a specific version
         with:
-          sarif_file: trivy-results.sarif
+          image-ref: ${{ inputs.image_ref }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL' # Adjust severity as needed
+          exit-code: '1' # Fail the workflow step if vulnerabilities are found
+          ignore-unfixed: true # Optional: Ignore unfixed vulnerabilities
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() # Ensure this runs even if Trivy fails
+        with:
+          sarif_file: 'trivy-results.sarif'
