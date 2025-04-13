@@ -29,17 +29,6 @@ jobs:
       - name: Print image ref for debug 🐞
         run: echo "IMAGE_REF=${{ inputs.image_ref }}"
 
-      - name: 'Auth to GCP'
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_CREDS }}
-
-      - name: 'Set up Cloud SDK'
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: 'Docker Auth To GAR'
-        run: gcloud auth configure-docker "${{ secrets.GAR_REGION }}-docker.pkg.dev"
-
       # - name: Trivy scan
       #   uses: aquasecurity/trivy-action@master
       #   with:
@@ -60,7 +49,8 @@ jobs:
       - name: Run Trivy Image Scan (Public Image)
         run: |
           IMAGE="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.image_ref }}"
-          trivy image --format sarif -o trivy-results.sarif "$IMAGE"
+          LOCAL_IMAGE="fe-app:${{ inputs.image_ref }}"
+          trivy image --format sarif -o trivy-results.sarif "$LOCAL_IMAGE"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v3

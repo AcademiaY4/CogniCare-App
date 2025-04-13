@@ -39,4 +39,4 @@ jobs:
           DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${DOCKER_TAG_SHA}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
           echo "docker_tag=$DOCKER_TAG_SHA" >> $GITHUB_OUTPUT
-          docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}
+          docker build -t fe-app:${DOCKER_TAG_SHA} ${{ inputs.dockerfile_path }}
