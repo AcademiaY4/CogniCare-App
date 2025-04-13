@@ -29,6 +29,17 @@ jobs:
       - name: Print image ref for debug 🐞
         run: echo "IMAGE_REF=${{ inputs.image_ref }}"
 
+      - name: 'Auth to GCP'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDS }}
+
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: 'Docker Auth To GAR'
+        run: gcloud auth configure-docker "${{ secrets.GAR_REGION }}-docker.pkg.dev"
+
       - name: Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
