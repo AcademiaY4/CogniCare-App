@@ -50,5 +50,5 @@ jobs:
         run: |
           DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ github.sha }}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
-           echo "docker_tag=${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "docker_tag=${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}
