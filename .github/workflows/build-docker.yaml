@@ -14,8 +14,6 @@ on:
         value: ${{ jobs.build.outputs.docker_tag }}
     
     secrets:
-      GCP_CREDS:
-        required: true
       PROJECT_ID:
         required: true
       GAR_REGION:
