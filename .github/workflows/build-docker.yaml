@@ -61,8 +61,8 @@ jobs:
           IMAGE_NAME="${{ secrets.FE_GAR_IMAGE_NAME }}"
           
           # Build the docker tag string
-          DOCKER_TAG="${GAR_REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${{ github.sha }}"
           DOCKER_TAG_SHA="${{ github.sha }}"
+          DOCKER_TAG="${GAR_REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${DOCKER_TAG_SHA}"
           
           # Output for debugging
           echo "Constructed DOCKER_TAG: $DOCKER_TAG"
