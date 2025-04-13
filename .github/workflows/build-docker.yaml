@@ -7,12 +7,6 @@ on:
       dockerfile_path:
         required: false
         type: string
-      docker_image_name:
-        required: false
-        type: string
-      docker_repo_name:
-        required: false
-        type: string
     
     outputs:
       docker_tag:
@@ -25,6 +19,10 @@ on:
       PROJECT_ID:
         required: true
       GAR_REGION:
+        required: true
+      FE_GAR_IMAGE_NAME:
+        required: true
+      FE_GAR_REPO_NAME:
         required: true
 
 jobs:
@@ -50,7 +48,7 @@ jobs:
       - name: 'Build Docker Image'
         id: set_tag
         run: |
-          DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ inputs.docker_repo_name }}/${{ inputs.docker_image_name }}:${{ github.sha }}"
+          DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ github.sha }}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
           echo "docker_tag=$DOCKER_TAG" >> $GITHUB_OUTPUT
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}
