@@ -2,23 +2,27 @@ name: "Reusable: Build Docker"
 
 on:
   workflow_call:
+    
     inputs:
       dockerfile_path:
         required: false
         type: string
-        default: './frontend'
+      docker_image_name:
+        required: false
+        type: string
+      docker_repo_name:
+        required: false
+        type: string
+    
     outputs:
       docker_tag:
         description: "Docker tag"
         value: ${{ jobs.build.outputs.docker_tag }}
+    
     secrets:
       GCP_CREDS:
         required: true
       PROJECT_ID:
-        required: true
-      GAR_IMAGE_NAME:
-        required: true
-      GAR_REPO_NAME:
         required: true
       GAR_REGION:
         required: true
@@ -46,7 +50,7 @@ jobs:
       - name: 'Build Docker Image'
         id: set_tag
         run: |
-          DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_REPO_NAME }}/${{ secrets.GAR_IMAGE_NAME }}:${{ github.sha }}"
+          DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ inputs.docker_repo_name }}/${{ inputs.docker_image_name }}:${{ github.sha }}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
-          echo "::set-output name=docker_tag::$DOCKER_TAG"
+          echo "docker_tag=$DOCKER_TAG" >> $GITHUB_OUTPUT
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}

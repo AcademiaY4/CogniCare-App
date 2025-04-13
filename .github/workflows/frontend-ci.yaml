@@ -89,6 +89,10 @@ permissions:
 jobs:
   build:
     uses: ./.github/workflows/build-docker.yaml
+    with:
+      docker_image_name: ${{ secrets.GAR_IMAGE_NAME }}
+      docker_repo_name: ${{ secrets.GAR_REPO_NAME }}
+      dockerfile_path: './frontend'
     secrets: inherit
 
   trivy-scan:
