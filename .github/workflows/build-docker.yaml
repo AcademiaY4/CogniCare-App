@@ -52,3 +52,6 @@ jobs:
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
           echo "docker_tag=$DOCKER_TAG" >> $GITHUB_OUTPUT
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}
+
+      - name: 'Debug Output Docker Tag'
+        run: echo "utput docker_tag= ${{ steps.set_tag.outputs.docker_tag }}"
