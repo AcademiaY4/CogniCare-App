@@ -44,7 +44,7 @@ jobs:
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
 
       - name: 'Call Trivy Reusable Workflow'
-        uses: ./.github/workflows/trivy-scan.yml
+        uses: ./.github/workflows/trivy-scan.yaml
         with:
           image: ${{ env.DOCKER_TAG }}
 
