@@ -34,42 +34,11 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v4
 
-      - name: 'Auth to GCP'
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_CREDS }}
-
-      - name: 'Set up Cloud SDK'
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: 'Docker Auth To GAR'
-        run: gcloud auth configure-docker "${{ secrets.GAR_REGION }}-docker.pkg.dev"
-
       - name: 'Build Docker Image'
         id: set_tag
         run: |
-          # First ensure all the individual parts are accessible
-          echo "Testing GAR_REGION: ${GAR_REGION:-NOT_SET}"
-          echo "Testing PROJECT_ID: ${PROJECT_ID:-NOT_SET}"
-          echo "Testing FE_GAR_REPO_NAME: ${FE_GAR_REPO_NAME:-NOT_SET}"
-          echo "Testing FE_GAR_IMAGE_NAME: ${FE_GAR_IMAGE_NAME:-NOT_SET}"
-          
-          # Set variables from secrets first
-          GAR_REGION="${{ secrets.GAR_REGION }}"
-          PROJECT_ID="${{ secrets.PROJECT_ID }}"
-          REPO_NAME="${{ secrets.FE_GAR_REPO_NAME }}"
-          IMAGE_NAME="${{ secrets.FE_GAR_IMAGE_NAME }}"
-          
-          # Build the docker tag string
           DOCKER_TAG_SHA="${{ github.sha }}"
-          DOCKER_TAG="${GAR_REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${DOCKER_TAG_SHA}"
-          
-          # Output for debugging
-          echo "Constructed DOCKER_TAG: $DOCKER_TAG"
-          
-          # Set the outputs
+          DOCKER_TAG="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${DOCKER_TAG_SHA}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
           echo "docker_tag=$DOCKER_TAG_SHA" >> $GITHUB_OUTPUT
-          
-          # Build the docker image
           docker build -t "$DOCKER_TAG" ${{ inputs.dockerfile_path }}

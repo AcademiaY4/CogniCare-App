@@ -6,10 +6,17 @@ on:
       docker_tag:
         required: true
         type: string
+  
     secrets:
       GCP_CREDS:
         required: true
+      PROJECT_ID:
+        required: true
       GAR_REGION:
+        required: true
+      FE_GAR_IMAGE_NAME:
+        required: true
+      FE_GAR_REPO_NAME:
         required: true
 
 jobs:
@@ -21,8 +28,11 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDS }}
 
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+
       - name: 'Docker Auth To GAR'
         run: gcloud auth configure-docker "${{ secrets.GAR_REGION }}-docker.pkg.dev"
 
       - name: 'Push Docker Image'
-        run: docker push "${{ inputs.docker_tag }}"
+        run: docker push "${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.docker_tag }}"

@@ -22,7 +22,6 @@ jobs:
     secrets: 
       FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
       FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-      GCP_CREDS: ${{ secrets.GCP_CREDS }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       GAR_REGION: ${{ secrets.GAR_REGION }}
   
@@ -31,7 +30,12 @@ jobs:
     uses: ./.github/workflows/trivy-scan.yaml
     with:
       image_ref: ${{ needs.build.outputs.docker_tag }}
-    secrets: inherit
+    secrets: 
+      FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
+      FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}
 
   push:
     needs: trivy-scan
