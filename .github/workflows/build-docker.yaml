@@ -5,7 +5,7 @@ on:
     
     inputs:
       dockerfile_path:
-        required: false
+        required: true
         type: string
     
     outputs:
