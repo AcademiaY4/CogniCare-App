@@ -15,15 +15,11 @@ jobs:
   security_scan:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout Code (if needed)'
+      - name: 'Checkout Code'
         uses: actions/checkout@v4
-        # Conditionally checkout only if the image context requires it
-        # For pre-built images, this step might not be necessary.
-        # You might need to adjust the 'if' condition based on your use case.
-        if: false # Set to true if Trivy needs to access the codebase
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.18.0 # Use a specific version
+        uses: aquasecurity/trivy-action@0.18.0
         with:
           image-ref: ${{ inputs.image_ref }}
           format: 'sarif'
