@@ -44,7 +44,7 @@ jobs:
       #   uses: aquasecurity/trivy-action@master
       #   with:
       #     scan-type: image
-      #     image-ref: ${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.docker_tag }}
+      #     image-ref: ${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.image_ref }}
       #     format: 'sarif'
       #     output: 'trivy-results.sarif'
       #     severity: 'HIGH,CRITICAL'
@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Trivy Image Scan (Public Image)
         run: |
-          IMAGE="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.docker_tag }}"
+          IMAGE="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.image_ref }}"
           trivy image --format sarif -o trivy-results.sarif "$IMAGE"
 
       - name: Upload Trivy scan results
