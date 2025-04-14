@@ -72,6 +72,17 @@ env:
 
 jobs:
 
+  sonar:
+    uses: ./.github/workflows/sonarqube-analysis.yaml
+    with:
+      context_path: './backend/treatment-planning-service'
+      sonar_sources: './backend/treatment-planning-service/app'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      ORG_SONAR: ${{ secrets.ORG_SONAR }}
+      PROJECT_KEY_SONAR: ${{ secrets.PROJECT_KEY_SONAR }}
+
   build-push:
     uses: ./.github/workflows/build-and-push.yaml
     with:
