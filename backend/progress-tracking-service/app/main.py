@@ -25,7 +25,7 @@ app.include_router(predictions.router)
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to Alzheimer's Disease Progress Tracking API",
+        "message": "Progress Tracking API Online",
         "version": "1.0.0",
         "endpoints": ["/details", "/predict"]
     }
