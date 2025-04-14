@@ -2,7 +2,9 @@ const whiteList = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://dashboard.dementiaguard.live"
+    "https://dashboard.dementiaguard.live",
+    "http://cognicare.dementiaguard.live",
+    "https://cognicare.dementiaguard.live"
 ];
 
 const corsOption = {
