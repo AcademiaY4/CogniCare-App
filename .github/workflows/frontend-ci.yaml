@@ -21,10 +21,10 @@ jobs:
       context_path: ./frontend
       image_tag: ${{ github.sha }}
     secrets:
-      PROJECT_ID: ${{ env.PROJECT_ID }}
-      GAR_REGION: ${{ env.GAR_REGION }}
-      GAR_IMAGE_NAME: ${{ env.GAR_IMAGE_NAME }}
-      GAR_REPO_NAME: ${{ env.GAR_REPO_NAME }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
   snyk-scan:
@@ -41,7 +41,7 @@ jobs:
     with:
       image_tag: ${{ github.sha }}
     secrets:
-      PROJECT_ID: ${{ env.PROJECT_ID }}
-      GAR_REGION: ${{ env.GAR_REGION }}
-      GAR_IMAGE_NAME: ${{ env.GAR_IMAGE_NAME }}
-      GAR_REPO_NAME: ${{ env.GAR_REPO_NAME }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
