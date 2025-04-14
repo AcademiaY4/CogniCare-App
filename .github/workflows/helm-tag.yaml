@@ -58,7 +58,9 @@ on:
         required: true
       MANIFEST_BRANCH:
         required: false
-        
+      PAT_FOR_MANIFEST:
+        required: false
+
     inputs:
       helm_repo:
         required: true
@@ -82,7 +84,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AcademiaY4/CogniCare-Manifest
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_FOR_MANIFEST }}
           path: helm-manifest
 
       - name: Update image tag

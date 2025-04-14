@@ -77,4 +77,5 @@ jobs:
       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MANIFEST_REPO: AcademiaY4/CogniCare-Manifest
       MANIFEST_BRANCH: master
+      PAT_FOR_MANIFEST: ${{ secrets.PAT_FOR_MANIFEST }}
 
