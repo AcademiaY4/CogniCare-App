@@ -1,50 +1,118 @@
-name: 'MRI Service CI'
+# name: 'MRI Service CI'
+
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - 'backend/mri-service/**'
+#   pull_request:
+#     branches:
+#       - master
+#     paths:
+#       - 'backend/mri-service/**'
+
+# env:
+#   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
+#   GAR_IMAGE_NAME: '${{ secrets.GAR_IMAGE_NAME }}'
+#   GAR_REPO_NAME: '${{ secrets.GAR_REPO_NAME }}'
+#   GAR_REGION: '${{ secrets.GAR_REGION }}'
+
+# jobs:
+#   deploy:
+#     runs-on: 'ubuntu-latest'
+
+#     permissions:
+#       contents: 'read'
+#       id-token: 'write'
+
+#     steps:
+#       - name: 'Checkout'
+#         uses: 'actions/checkout@v4'
+
+#       - name: 'Authenticate to GCP'
+#         id: 'auth'
+#         uses: 'google-github-actions/auth@v2'
+#         with:
+#           credentials_json: '${{ secrets.GCP_CREDS }}'
+
+#       - name: Set up Cloud SDK
+#         uses: 'google-github-actions/setup-gcloud@v2'
+
+#       - name: 'Docker Auth To GAR'
+#         run: |
+#           gcloud auth configure-docker "${{env.GAR_REGION}}-docker.pkg.dev"
+
+#       - name: 'Build and Push To GAR'
+#         run: |-
+#           DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
+#           docker build --tag "${DOCKER_TAG}" ./backend/mri-service
+#           docker push "${DOCKER_TAG}"
+
+name: "MRI Service CI"
 
 on:
   push:
-    branches:
-      - master
-    paths:
-      - 'backend/mri-service/**'
+    branches: [master]
+    paths: ['backend/mri-service/**']
   pull_request:
-    branches:
-      - master
-    paths:
-      - 'backend/mri-service/**'
+    branches: [master]
+    paths: ['backend/mri-service/**']
+
+permissions:
+  contents: write
+  id-token: write
+  security-events: write
 
 env:
-  PROJECT_ID: '${{ secrets.PROJECT_ID }}'
-  GAR_IMAGE_NAME: '${{ secrets.GAR_IMAGE_NAME }}'
-  GAR_REPO_NAME: '${{ secrets.GAR_REPO_NAME }}'
-  GAR_REGION: '${{ secrets.GAR_REGION }}'
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GAR_IMAGE_NAME: ${{ secrets.MRI_GAR_IMAGE_NAME }}
+  GAR_REPO_NAME: ${{ secrets.MRI_GAR_REPO_NAME }}
+  GAR_REGION: ${{ secrets.GAR_REGION }}
 
 jobs:
-  deploy:
-    runs-on: 'ubuntu-latest'
 
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+  build-push:
+    uses: ./.github/workflows/build-and-push.yaml
+    with:
+      context_path: ./backend/mri-service
+      image_tag: ${{ github.sha }}
+    secrets:
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ secrets.MRI_GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ secrets.MRI_GAR_REPO_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
-    steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@v4'
+  # snyk-scan:
+  #   uses: ./.github/workflows/snyk-scan.yaml
+  #   needs: build-push
+  #   with:
+  #     context_path: ./backend/mri-service
+  #   secrets:
+  #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: 'Authenticate to GCP'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDS }}'
+  trivy-scan:
+    uses: ./.github/workflows/trivy-scan.yaml
+    needs: build-push
+    with:
+      image_tag: ${{ github.sha }}
+    secrets:
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      GAR_REGION: ${{ secrets.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ secrets.MRI_GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ secrets.MRI_GAR_REPO_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      - name: 'Docker Auth To GAR'
-        run: |
-          gcloud auth configure-docker "${{env.GAR_REGION}}-docker.pkg.dev"
-
-      - name: 'Build and Push To GAR'
-        run: |-
-          DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" ./backend/mri-service
-          docker push "${DOCKER_TAG}"
+  update-manifest:
+    uses: ./.github/workflows/helm-tag.yaml
+    needs: trivy-scan
+    with:
+      service_name: 'mri-service'
+      image_tag: ${{ github.sha }}
+      helm_repo: "https://github.com/AcademiaY4/CogniCare-Manifest.git"
+      service_folder: "mri-service"
+    secrets:
+      MANIFEST_REPO: AcademiaY4/CogniCare-Manifest
+      MANIFEST_BRANCH: master
+      PAT_FOR_MANIFEST: ${{ secrets.PAT_FOR_MANIFEST }}
