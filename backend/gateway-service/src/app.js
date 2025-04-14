@@ -23,7 +23,7 @@ app.use('/gateway/api/v1/progression-tracking-service', proxy(EnvConfig.PROGRESS
 
 //not found route
 app.use((req, res) => {
-    return response(res, 404, { message: "Endpoint not found" })
+    return response(res, 404, { message: "Endpoint Not Nound" })
 })
 
 
