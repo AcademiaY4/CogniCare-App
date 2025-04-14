@@ -20,13 +20,13 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(treatment_plan.router, prefix=f"/api/{API_VERSION}/treatment-plan")
-app.include_router(availability.router, prefix=f"/api/{API_VERSION}/availability")
+app.include_router(treatment_plan.router, prefix="/treatment-plan")
+app.include_router(availability.router, prefix="/availability")
 
 @app.get("/")
 async def root():
     return {
         "message": "Treatment Planner API Online",
         "version": "1.0.0",
-        "endpoints": [f"/api/{API_VERSION}/treatment-plan", f"/api/{API_VERSION}/availability"]
+        "endpoints": ["/treatment-plan", "/availability"]
     }
