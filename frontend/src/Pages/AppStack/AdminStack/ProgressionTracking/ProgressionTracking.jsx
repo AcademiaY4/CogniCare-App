@@ -17,7 +17,7 @@ export default function ProgressionTracking() {
 
     try {
       const response = await axios.post(
-        "http://cognicare.dementiaguard.live/gateway/api/v1/progression-tracking-service/predict",
+        "https://cognicare.dementiaguard.live/gateway/api/v1/progression-tracking-service/predict",
         data,
         {
           headers: {

@@ -3,7 +3,7 @@ import axios from "axios";
 import ResultsDisplay from "./ResultsDisplay";
 import Toaster from "../../../../Utils/Toaster/Toaster";
 
-const API_URL =  "http://cognicare.dementiaguard.live/gateway/api/v1/mri-service/predict/";
+const API_URL =  "https://cognicare.dementiaguard.live/gateway/api/v1/mri-service/predict/";
 
 const MRIUploader = () => {
   const [file, setFile] = useState(null);
