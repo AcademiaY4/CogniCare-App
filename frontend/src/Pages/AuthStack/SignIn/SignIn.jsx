@@ -62,7 +62,7 @@ export default function SignIn() {
                 <div className="row justify-content-center align-items-center">
                     <div className="col-12 col-md-5">
                         <div className="mb-lg-9 mb-5 d-flex flex-column align-items-center">
-                            <img className='w-65 mb-5' src="../assets/images/logo/dg-logo.png" alt="eCommerce HTML Template" />
+                            <img className='w-75 mb-5' src="../assets/images/logo/full_logo_cogni_trans.png" alt="logo" />
                             <p className='fw-bolder'>Admin Login</p>
                         </div>
                         <form className="needs-validation" noValidate>
@@ -84,15 +84,15 @@ export default function SignIn() {
                                 </div>
                                 <div className="d-flex justify-content-end mb-4 mt-1">
                                     <div>
-                                        <a href="">
+                                        <a href="" className='text-dark'>
                                             Forgot password?
                                         </a>
                                     </div>
                                 </div>
                                 {/* btn */}
-                                <div className="col-12 d-grid"><button type="submit" className="btn btn-primary">Sign In</button></div>
+                                <div className="col-12 d-grid"><button type="submit" className="btn btn-dark">Sign In</button></div>
                                 <p className='text-center m-0 my-3'>or</p>
-                                <div className="col-12 d-grid"><button type="button" onClick={() => handleLoginAsGuest()} className="btn btn-primary">Login As Guest</button></div>
+                                <div className="col-12 d-grid"><button type="button" onClick={() => handleLoginAsGuest()} className="btn btn-dark">Login As Guest</button></div>
                                 {/* link */}
                                 {/* <p className='text-capitalize text-center'>
                                     With great power comes great

@@ -19,10 +19,10 @@ export default function DashBanner() {
                 <div
                     className="card-lg bg-light p-8 border-0 rounded-4"
                     style={{
-                        backgroundImage: 'url(/assets/images/banner/dg-doc-banner.jpg)',
+                        backgroundImage: 'url(/assets/images/banner/mainAdminBanner.png)',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                        backgroundPosition: 'top',
+                        backgroundPosition: 'left',
                     }}
                 >
                     <div className="card-body">

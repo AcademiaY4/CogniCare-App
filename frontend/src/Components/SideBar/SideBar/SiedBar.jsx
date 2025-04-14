@@ -14,7 +14,7 @@ export default function SideBar({ logout }) {
           >
             <img
               className="w-100"
-              src="/assets/images/logo/dg-logo.png"
+              src="/assets/images/logo/full_logo_cogni_trans.png"
               alt="Logo"
             />
           </NavLink>
