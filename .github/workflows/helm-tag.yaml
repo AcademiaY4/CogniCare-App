@@ -51,6 +51,14 @@ name: Update Helm Image Tag
 
 on:
   workflow_call:
+    secrets:
+      # GITHUB_TOKEN:
+      #   required: true
+      MANIFEST_REPO:
+        required: true
+      MANIFEST_BRANCH:
+        required: false
+        
     inputs:
       helm_repo:
         required: true
