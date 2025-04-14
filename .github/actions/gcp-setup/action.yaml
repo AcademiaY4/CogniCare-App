@@ -20,5 +20,6 @@ runs:
         project_id: ${{ env.PROJECT_ID }}
 
     - name: Docker Auth to GAR
+      shell: bash
       run: |
         gcloud auth configure-docker "${{ env.GAR_REGION }}-docker.pkg.dev"
