@@ -27,8 +27,7 @@ export default function TreatmentPlans() {
     setLoading(true);
     try {
       const response = await axios.post(
-        // "https://dg-personalized-treatment-planning-service-341015716129.asia-southeast1.run.app/api/v1/treatment-plan/",
-        "http://35.240.138.184:8349/api/v1/treatment-plan/",
+        "http://cognicare.dementiaguard.live/gateway/api/v1/treatment-plan/",
         {
           id: new Date().getTime().toString(),
           firstName: formData.firstName,
