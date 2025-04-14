@@ -26,7 +26,7 @@ app.include_router(availability.router, prefix=f"/api/{API_VERSION}/availability
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to the Dementia Treatment Planner API",
+        "message": "Treatment Planner API Online",
         "version": "1.0.0",
         "endpoints": [f"/api/{API_VERSION}/treatment-plan", f"/api/{API_VERSION}/availability"]
     }
