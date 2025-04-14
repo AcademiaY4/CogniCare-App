@@ -15,8 +15,8 @@ permissions:
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-  GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
+  GAR_IMAGE_NAME: ${{ secrets.FE_GAR_IMAGE_NAME }}
+  GAR_REPO_NAME: ${{ secrets.FE_GAR_REPO_NAME }}
   GAR_REGION: ${{ secrets.GAR_REGION }}
 
 jobs:
@@ -41,8 +41,8 @@ jobs:
     secrets:
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       GAR_REGION: ${{ secrets.GAR_REGION }}
-      GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-      GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
+      GAR_IMAGE_NAME: ${{ secrets.FE_GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ secrets.FE_GAR_REPO_NAME }}
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
   # snyk-scan:
