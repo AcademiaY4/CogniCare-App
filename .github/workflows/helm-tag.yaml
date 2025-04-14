@@ -1,48 +1,94 @@
+# name: Update Helm Image Tag
+
+# on:
+#   workflow_call:
+#     inputs:
+#       service_name:
+#         required: true
+#         type: string
+#       image_tag:
+#         required: true
+#         type: string
+#     secrets:
+#       # GITHUB_TOKEN:
+#       #   required: true
+#       MANIFEST_REPO:
+#         required: true
+#       MANIFEST_BRANCH:
+#         required: false
+
+# jobs:
+#   update-manifest:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout manifest repo
+#         uses: actions/checkout@v4
+#         with:
+#           repository: ${{ secrets.MANIFEST_REPO }}
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           ref: ${{ secrets.MANIFEST_BRANCH || 'msater' }}
+#           path: manifest
+
+#       - name: Update image tag in Helm values.yaml
+#         run: |
+#           FILE="manifest/charts/${{ inputs.service_name }}/values.yaml"
+#           echo "Updating tag in: $FILE"
+
+#           # Safely replace the tag under image
+#           sed -i "s|\(tag:\s*\).*|\1${{ inputs.image_tag }}|" "$FILE"
+
+#       - name: Commit and push changes
+#         run: |
+#           cd manifest
+#           git config user.name "github-actions"
+#           git config user.email "github-actions@github.com"
+#           git add charts/${{ inputs.service_name }}/values.yaml
+#           git commit -m "ci: update image tag for ${{ inputs.service_name }} to ${{ inputs.image_tag }}"
+#           git push
+
 name: Update Helm Image Tag
 
 on:
   workflow_call:
     inputs:
-      service_name:
+      helm_repo:
         required: true
         type: string
       image_tag:
         required: true
         type: string
-    secrets:
-      GITHUB_TOKEN:
+      service_folder:
         required: true
-      MANIFEST_REPO:
-        required: true
-      MANIFEST_BRANCH:
-        required: false
+        type: string
 
 jobs:
-  update-manifest:
+  update-helm:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout manifest repo
+      - name: Checkout Helm Manifest Repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.MANIFEST_REPO }}
+          repository: AcademiaY4/CogniCare-Manifest
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ secrets.MANIFEST_BRANCH || 'msater' }}
-          path: manifest
+          path: helm-manifest
 
-      - name: Update image tag in Helm values.yaml
+      - name: Update image tag
+        working-directory: helm-manifest/charts/${{ inputs.service_folder }}
         run: |
-          FILE="manifest/charts/${{ inputs.service_name }}/values.yaml"
-          echo "Updating tag in: $FILE"
+          echo "Updating image tag to ${{ inputs.image_tag }}..."
+          sed -i "s/tag: .*/tag: ${{ inputs.image_tag }}/" values.yaml
 
-          # Safely replace the tag under image
-          sed -i "s|\(tag:\s*\).*|\1${{ inputs.image_tag }}|" "$FILE"
-
-      - name: Commit and push changes
+      - name: Configure Git
+        working-directory: helm-manifest
         run: |
-          cd manifest
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add charts/${{ inputs.service_name }}/values.yaml
-          git commit -m "ci: update image tag for ${{ inputs.service_name }} to ${{ inputs.image_tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and Push changes
+        working-directory: helm-manifest
+        run: |
+          git add .
+          git commit -m "chore: update image tag to ${{ inputs.image_tag }}"
           git push

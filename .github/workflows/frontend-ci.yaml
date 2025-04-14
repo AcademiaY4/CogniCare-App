@@ -9,7 +9,7 @@ on:
     paths: ["frontend/**"]
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   security-events: write 
 
@@ -71,8 +71,10 @@ jobs:
     with:
       service_name: 'frontend'
       image_tag: ${{ github.sha }}
+      helm_repo: "https://github.com/AcademiaY4/CogniCare-Manifest.git"
+      service_folder: "frontend"
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MANIFEST_REPO: AcademiaY4/CogniCare-Manifest
       MANIFEST_BRANCH: master
 
