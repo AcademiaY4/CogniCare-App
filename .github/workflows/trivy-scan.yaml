@@ -16,6 +16,8 @@ on:
         required: true
       GAR_REPO_NAME:
         required: true
+      GCP_CREDS:
+        required: true
 
 jobs:
   trivy:
@@ -34,6 +36,14 @@ jobs:
       #     severity: 'HIGH,CRITICAL'
       #     exit-code: '1'
       #     ignore-unfixed: true
+
+      - name: GCP GAR Setup
+        uses: ./.github/actions/gcp-setup
+        with:
+          credentials_json: '${{ secrets.GCP_CREDS }}'
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          GAR_REGION: ${{ secrets.GAR_REGION }}
 
       - name: Set up Trivy
         run: |

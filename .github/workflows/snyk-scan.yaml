@@ -44,6 +44,9 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Authenticate Snyk CLI
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
       - name: Run Snyk test (Code + Dependencies Scan)
         run: |
           cd ${{ inputs.context_path }}
