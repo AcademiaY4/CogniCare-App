@@ -28,7 +28,7 @@ jobs:
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
   snyk-scan:
-    uses: ./.github/workflows/reusable-snyk-scan.yaml
+    uses: ./.github/workflows/snyk-scan.yaml
     needs: build-push
     with:
       context_path: ./frontend
