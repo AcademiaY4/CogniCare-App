@@ -27,7 +27,7 @@ export default function Header() {
           </div>
           <div>
             <ul className="list-unstyled d-flex align-items-center mb-0 ms-5 ms-lg-0">
-              <li className="me-2">
+              {/* <li className="me-2">
                 <NavLink
                   to={"notifications"}
                   className="position-relative btn-icon btn-light btn rounded-circle"
@@ -37,9 +37,9 @@ export default function Header() {
                     2
                   </span>
                 </NavLink>
-              </li>
+              </li> */}
               <li className="ms-4">
-                <NavLink to={"profile"}>
+                <NavLink to={"/app/admin/dashboard"}>
                   <img
                     src="/assets/images/avatar/avatar-1.jpg"
                     alt="propic"

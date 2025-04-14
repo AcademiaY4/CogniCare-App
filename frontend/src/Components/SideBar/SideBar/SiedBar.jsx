@@ -122,7 +122,7 @@ export default function SideBar({ logout }) {
 
             {/* Common profile and logout items */}
             <hr className="bordered" />
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink to={"/app/profile"} className="nav-link">
                 <div className="d-flex align-items-center">
                   <span className="nav-link-icon">
@@ -131,7 +131,7 @@ export default function SideBar({ logout }) {
                   <span className="nav-link-text">Profile</span>
                 </div>
               </NavLink>
-            </li>
+            </li> */}
             <li className="nav-item">
               <button onClick={() => logout()} className="nav-link w-100">
                 <div className="d-flex align-items-center">
