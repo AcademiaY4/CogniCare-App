@@ -36,7 +36,9 @@ jobs:
       #     severity: 'HIGH,CRITICAL'
       #     exit-code: '1'
       #     ignore-unfixed: true
-
+      - name: Checkout
+        uses: actions/checkout@v4
+        
       - name: GCP GAR Setup
         uses: ./.github/actions/gcp-setup
         with:
