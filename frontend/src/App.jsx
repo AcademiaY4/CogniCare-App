@@ -39,7 +39,6 @@ function App() {
           {/* Public Routes */}
           {/* <Route path="/" element={<h1>hello</h1>} /> */}
 
-          
           {/* Auth Stack */}
           <Route path="/" element={<AuthStack />}>
             <Route index element={<SignIn />} />
