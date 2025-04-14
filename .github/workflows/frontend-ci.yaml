@@ -64,3 +64,15 @@ jobs:
       GAR_IMAGE_NAME: ${{ secrets.FE_GAR_IMAGE_NAME }}
       GAR_REPO_NAME: ${{ secrets.FE_GAR_REPO_NAME }}
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
+  
+  update-manifest:
+    uses: ./.github/workflows/update-helm-tag.yaml
+    needs: trivy-scan
+    with:
+      service_name: 'frontend'
+      image_tag: ${{ github.sha }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      MANIFEST_REPO: AcademiaY4/CogniCare-Manifest
+      MANIFEST_BRANCH: master
+
