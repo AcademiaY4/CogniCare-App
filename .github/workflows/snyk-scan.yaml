@@ -40,7 +40,7 @@ jobs:
           fi
 
       - name: Set up Snyk
-        uses: snyk/actions/setup
+        uses: snyk/actions/setup@master
         with:
           version: 'latest'
 
