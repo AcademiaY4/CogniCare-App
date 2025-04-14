@@ -8,6 +8,10 @@ on:
         required: true
       SONAR_HOST_URL:
         required: true
+      PROJECT_KEY_SONAR:
+        required: true
+      ORG_SONAR:
+        required: true
     
     inputs:
       context_path:
@@ -47,6 +51,9 @@ jobs:
         env:
           SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
           SONAR_HOST_URL: "${{ secrets.SONAR_HOST_URL }}"
+        with:
+          sonar-projectKey: "${{ secrets.PROJECT_KEY_SONAR }}"  # Replace with your project key
+          sonar-organization: "${{ secrets.ORG_SONAR }}"  # Replace with your organization name
 
       # Check the Quality Gate status.
       - name: SonarQube Server Quality Gate check
