@@ -1,22 +1,20 @@
-name: "Reusable: Trivy Scan"
+name: "Trivy Image Scanning"
 
 on:
   workflow_call:
     inputs:
-      image_ref:
+      image_tag:
         required: true
         type: string
     
     secrets:
-      GCP_CREDS:
-        required: true
       PROJECT_ID:
         required: true
       GAR_REGION:
         required: true
-      FE_GAR_IMAGE_NAME:
+      GAR_IMAGE_NAME:
         required: true
-      FE_GAR_REPO_NAME:
+      GAR_REPO_NAME:
         required: true
 
 jobs:
@@ -25,9 +23,6 @@ jobs:
     permissions:
       security-events: write
     steps:
-
-      - name: Print image ref for debug 🐞
-        run: echo "IMAGE_REF=${{ inputs.image_ref }}"
 
       # - name: Trivy scan
       #   uses: aquasecurity/trivy-action@master
@@ -46,11 +41,10 @@ jobs:
           sudo apt-get install -y curl
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
 
-      - name: Run Trivy Image Scan (Public Image)
+      - name: Trivy Scan of Remote Image
         run: |
-          IMAGE="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.FE_GAR_REPO_NAME }}/${{ secrets.FE_GAR_IMAGE_NAME }}:${{ inputs.image_ref }}"
-          LOCAL_IMAGE="fe-app:${{ inputs.image_ref }}"
-          trivy image --format sarif -o trivy-results.sarif "$LOCAL_IMAGE"
+          IMAGE="${{ secrets.GAR_REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_REPO_NAME }}/${{ secrets.GAR_IMAGE_NAME }}:${{ inputs.image_tag }}"
+          trivy image --format sarif -o trivy-results.sarif "$IMAGE"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v3

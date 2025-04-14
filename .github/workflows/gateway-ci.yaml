@@ -1,50 +1,98 @@
-name: 'Gateway Service CI'
+# name: 'Gateway Service CI'
+
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - 'backend/gateway-service/**'
+#   pull_request:
+#     branches:
+#       - master
+#     paths:
+#       - 'backend/gateway-service/**'
+
+# env:
+#   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
+#   GAR_IMAGE_NAME: '${{ secrets.GATEWAY_GAR_IMAGE_NAME }}'
+#   GAR_REPO_NAME: '${{ secrets.GATEWAY_GAR_REPO_NAME }}'
+#   GAR_REGION: '${{ secrets.GAR_REGION }}'
+
+# jobs:
+#   deploy:
+#     runs-on: 'ubuntu-latest'
+
+#     permissions:
+#       contents: 'read'
+#       id-token: 'write'
+
+#     steps:
+#       - name: 'Checkout'
+#         uses: 'actions/checkout@v4'
+
+#       - name: 'Authenticate to GCP'
+#         id: 'auth'
+#         uses: 'google-github-actions/auth@v2'
+#         with:
+#           credentials_json: '${{ secrets.GCP_CREDS }}'
+
+#       - name: Set up Cloud SDK
+#         uses: 'google-github-actions/setup-gcloud@v2'
+
+#       - name: 'Docker Auth To GAR'
+#         run: |
+#           gcloud auth configure-docker "${{env.GAR_REGION}}-docker.pkg.dev"
+
+#       - name: 'Build and Push To GAR'
+#         run: |-
+#           DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
+#           docker build --tag "${DOCKER_TAG}" ./backend/gateway-service
+#           docker push "${DOCKER_TAG}"
+
+name: "Gateway Service CI"
 
 on:
   push:
-    branches:
-      - master
-    paths:
-      - 'backend/gateway-service/**'
+    branches: [master]
+    paths: ['backend/gateway-service/**']
   pull_request:
-    branches:
-      - master
-    paths:
-      - 'backend/gateway-service/**'
+    branches: [master]
+    paths: ['backend/gateway-service/**']
 
 env:
-  PROJECT_ID: '${{ secrets.PROJECT_ID }}'
-  GAR_IMAGE_NAME: '${{ secrets.GATEWAY_GAR_IMAGE_NAME }}'
-  GAR_REPO_NAME: '${{ secrets.GATEWAY_GAR_REPO_NAME }}'
-  GAR_REGION: '${{ secrets.GAR_REGION }}'
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GAR_IMAGE_NAME: ${{ secrets.GATEWAY_GAR_IMAGE_NAME }}
+  GAR_REPO_NAME: ${{ secrets.GATEWAY_GAR_REPO_NAME }}
+  GAR_REGION: ${{ secrets.GAR_REGION }}
 
 jobs:
-  deploy:
-    runs-on: 'ubuntu-latest'
+  build-push:
+    uses: ./.github/workflows/build-and-push.yaml
+    with:
+      context_path: ./backend/gateway-service
+      image_tag: ${{ github.sha }}
+    secrets:
+      PROJECT_ID: ${{ env.PROJECT_ID }}
+      GAR_REGION: ${{ env.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ env.GATEWAY_GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ env.GATEWAY_GAR_REPO_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+  snyk-scan:
+    uses: ./.github/workflows/snyk-scan.yaml
+    needs: build-push
+    with:
+      context_path: ./backend/gateway-service
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-    steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@v4'
-
-      - name: 'Authenticate to GCP'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDS }}'
-
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      - name: 'Docker Auth To GAR'
-        run: |
-          gcloud auth configure-docker "${{env.GAR_REGION}}-docker.pkg.dev"
-
-      - name: 'Build and Push To GAR'
-        run: |-
-          DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" ./backend/gateway-service
-          docker push "${DOCKER_TAG}"
+  trivy-scan:
+    uses: ./.github/workflows/trivy-scan.yaml
+    needs: build-push
+    with:
+      image_tag: ${{ github.sha }}
+    secrets:
+      PROJECT_ID: ${{ env.PROJECT_ID }}
+      GAR_REGION: ${{ env.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ env.GATEWAY_GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ env.GATEWAY_GAR_REPO_NAME }}

@@ -7,44 +7,41 @@ on:
   pull_request:
     branches: [master]
     paths: ["frontend/**"]
-  workflow_dispatch:
 
-permissions:
-  contents: read
-  id-token: write
-  security-events: write
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
+  GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
+  GAR_REGION: ${{ secrets.GAR_REGION }}
 
 jobs:
-  build:
-    uses: ./.github/workflows/build-docker.yaml
+  build-push:
+    uses: ./.github/workflows/build-and-push.yaml
     with:
-      dockerfile_path: "./frontend"
+      context_path: ./frontend
+      image_tag: ${{ github.sha }}
     secrets:
-      FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
-      FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      GAR_REGION: ${{ secrets.GAR_REGION }}
+      PROJECT_ID: ${{ env.PROJECT_ID }}
+      GAR_REGION: ${{ env.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ env.GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ env.GAR_REPO_NAME }}
+      GCP_CREDS: ${{ secrets.GCP_CREDS }}
+
+  snyk-scan:
+    uses: ./.github/workflows/reusable-snyk-scan.yaml
+    needs: build-push
+    with:
+      context_path: ./frontend
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   trivy-scan:
-    needs: build
     uses: ./.github/workflows/trivy-scan.yaml
+    needs: build-push
     with:
-      image_ref: ${{ needs.build.outputs.docker_tag }}
+      image_tag: ${{ github.sha }}
     secrets:
-      FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
-      FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-      GCP_CREDS: ${{ secrets.GCP_CREDS }}
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      GAR_REGION: ${{ secrets.GAR_REGION }}
-
-  push:
-    needs: trivy-scan
-    uses: ./.github/workflows/push-docker.yaml
-    with:
-      docker_tag: ${{ needs.build.outputs.docker_tag }}
-    secrets:
-      FE_GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
-      FE_GAR_IMAGE_NAME: ${{ secrets.GAR_IMAGE_NAME }}
-      GCP_CREDS: ${{ secrets.GCP_CREDS }}
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      GAR_REGION: ${{ secrets.GAR_REGION }}
+      PROJECT_ID: ${{ env.PROJECT_ID }}
+      GAR_REGION: ${{ env.GAR_REGION }}
+      GAR_IMAGE_NAME: ${{ env.GAR_IMAGE_NAME }}
+      GAR_REPO_NAME: ${{ env.GAR_REPO_NAME }}
