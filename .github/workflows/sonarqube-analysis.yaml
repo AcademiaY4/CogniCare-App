@@ -17,6 +17,9 @@ on:
       context_path:
         required: true
         type: string
+      sonar_sources:
+        required: false
+        type: string
 
 jobs:
   sonarqube-analysis:
@@ -51,6 +54,11 @@ jobs:
         env:
           SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
           SONAR_HOST_URL: "${{ secrets.SONAR_HOST_URL }}"
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.PROJECT_KEY_SONAR }}
+            -Dsonar.organization=${{ secrets.ORG_SONAR }}
+            -Dsonar.sources=${{ inputs.sonar_sources }}
 
       # Check the Quality Gate status.
       - name: SonarQube Server Quality Gate check
