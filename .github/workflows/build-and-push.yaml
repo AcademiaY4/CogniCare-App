@@ -10,7 +10,7 @@ on:
       image_tag:
         required: true
         type: string
-        
+
     secrets:
       PROJECT_ID:
         required: true
@@ -34,6 +34,9 @@ jobs:
         uses: ./.github/actions/gcp-setup
         with:
           credentials_json: '${{ secrets.GCP_CREDS }}'
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          GAR_REGION: ${{ secrets.GAR_REGION }}
 
       - name: Build and Push Docker image to GAR
         run: |

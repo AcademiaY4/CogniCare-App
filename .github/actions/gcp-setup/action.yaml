@@ -22,7 +22,7 @@ runs:
     - name: Debug GAR_REGION value
       shell: bash
       run: |
-        echo "GAR_REGION is: ${{ env.GAR_REGION }}"
+        echo "GAR_REGION is: ${{ env.PROJECT_ID }}"
     
     - name: Docker Auth to GAR
       shell: bash
