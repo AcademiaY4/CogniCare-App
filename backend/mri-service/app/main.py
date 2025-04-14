@@ -28,5 +28,5 @@ async def lifespan():
 
 @app.get("/")
 async def is_running():
-    return {"status": "MRI Analysis Service API Is Running"}
+    return {"status": "MRI Analysis Service API Is Online"}
 
