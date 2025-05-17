@@ -7,6 +7,7 @@ const whiteList = [
     "https://cognicare.dementiaguard.live"
 ];
 
+// The origin is the domain from which the request is made
 const corsOption = {
     origin: (origin, callback) => {
         if (whiteList.indexOf(origin) !== -1 || !origin) {
