@@ -30,3 +30,4 @@ async def lifespan():
 async def is_running():
     return {"status": "MRI Analysis Service API Is Online"}
 
+# MRI Services Extended
