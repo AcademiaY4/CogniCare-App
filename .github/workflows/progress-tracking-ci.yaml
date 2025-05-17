@@ -4,9 +4,9 @@ on:
   push:
     branches: [master]
     paths: ['backend/progress-tracking-service/**']
-  pull_request:
-    branches: [master]
-    paths: ['backend/progress-tracking-service/**']
+  # pull_request:
+  #   branches: [master]
+  #   paths: ['backend/progress-tracking-service/**']
 
 permissions:
   contents: write
