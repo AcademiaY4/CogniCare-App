@@ -2,6 +2,7 @@ import axios from 'axios';
 import response from "../../Utils/ResponseHandler/ResponseHandler.js";
 import { EnvConfig } from '../../Config/EnvConfigs.js';
 
+// This middleware function checks for a valid token in the request headers
 const Tokenware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     
