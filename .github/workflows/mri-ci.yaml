@@ -4,9 +4,9 @@ on:
   push:
     branches: [master]
     paths: ['backend/mri-service/**']
-  pull_request:
-    branches: [master]
-    paths: ['backend/mri-service/**']
+  # pull_request:
+  #   branches: [master]
+  #   paths: ['backend/mri-service/**']
 
 permissions:
   contents: write
@@ -45,13 +45,13 @@ jobs:
       GAR_REPO_NAME: ${{ secrets.GAR_REPO_NAME }}
       GCP_CREDS: ${{ secrets.GCP_CREDS }}
 
-  # snyk-scan:
-  #   uses: ./.github/workflows/snyk-scan.yaml
-  #   needs: build-push
-  #   with:
-  #     context_path: ./backend/mri-service
-  #   secrets:
-  #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  snyk-scan:
+    uses: ./.github/workflows/snyk-scan.yaml
+    needs: build-push
+    with:
+      context_path: ./backend/mri-service
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   trivy-scan:
     uses: ./.github/workflows/trivy-scan.yaml
