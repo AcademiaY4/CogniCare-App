@@ -32,6 +32,7 @@ import DoctorAvailability from './Pages/AppStack/AdminStack/Availability/DoctorA
 import BookedAppointments from './Pages/AppStack/AdminStack/Appointments/BookedAppointments';
 
 function App() {
+  // this is the main app.jsx file
   return (
     <AuthProvider>
       <BrowserRouter>
